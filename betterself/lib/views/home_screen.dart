@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'planning_screen.dart';
 import 'money_screen.dart';
 import 'diet_screen.dart';
@@ -27,11 +28,23 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<void> _logout() async {
+    await FirebaseAuth.instance.signOut();
+    if (!mounted) return; // Check if the widget is still mounted
+    Navigator.pushReplacementNamed(context, '/login');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('BetterSelf'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _logout,
+          ),
+        ],
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
@@ -55,6 +68,8 @@ class HomeScreenState extends State<HomeScreen> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
+        unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.white,
         onTap: _onItemTapped,
       ),
     );
