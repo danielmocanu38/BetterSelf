@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "814575891436",
+    "firebase_url": "https://betterself-595dd-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "betterself-595dd",
+    "storage_bucket": "betterself-595dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:814575891436:android:03fbb3befa9f62b70046c9",
+        "android_client_info": {
+          "package_name": "com.betterself.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyEDMXlak99G9Fckhp6biz4-L5maaOhzE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
