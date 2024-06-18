@@ -37,11 +37,11 @@ class MyApp extends StatelessWidget {
                 bodyMedium: const TextStyle(),
               ),
         ),
-        home: const AuthGate(), // Use AuthGate here
+        home: const AuthGate(),
         routes: {
           '/login': (context) => const LoginScreen(),
           '/register': (context) => const RegisterScreen(),
-          '/home': (context) => const HomeScreen(), // Add this line
+          '/home': (context) => const HomeScreen(),
         },
       ),
     );

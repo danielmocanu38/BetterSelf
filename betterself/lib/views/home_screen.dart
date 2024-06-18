@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'planning_screen.dart';
-import 'money_screen.dart';
-import 'diet_screen.dart';
+import 'activity_planning_screen.dart';
+import 'money_planning_screen.dart';
+import 'diet_planning_screen.dart';
 import 'todo_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,9 +16,9 @@ class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   static final List<Widget> _widgetOptions = <Widget>[
-    const PlanningScreen(),
-    const MoneyScreen(),
-    const DietScreen(),
+    const ActivityPlanningScreen(),
+    const MoneyPlanningScreen(),
+    const DietPlanningScreen(),
     const TodoScreen(),
   ];
 

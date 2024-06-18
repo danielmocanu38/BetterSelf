@@ -1,12 +1,14 @@
-// lib/models/activity.dart
+import 'package:flutter/material.dart';
+
 class Activity {
   String id;
   String title;
   String description;
   DateTime dateTime;
   bool isRoutine;
-  String repeatFrequency; // e.g., daily, weekly, monthly
-  int repeatCount; // number of times the activity will repeat
+  String repeatFrequency; // e.g., 'Daily', 'Weekly', 'Monthly', 'Yearly'
+  TimeOfDay startTime;
+  TimeOfDay endTime;
 
   Activity({
     required this.id,
@@ -15,6 +17,7 @@ class Activity {
     required this.dateTime,
     required this.isRoutine,
     this.repeatFrequency = '',
-    this.repeatCount = 0,
+    required this.startTime,
+    required this.endTime,
   });
 }

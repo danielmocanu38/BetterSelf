@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/diet_viewmodel.dart';
 
-class DietScreen extends StatelessWidget {
-  const DietScreen({super.key});
+class DietPlanningScreen extends StatelessWidget {
+  const DietPlanningScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

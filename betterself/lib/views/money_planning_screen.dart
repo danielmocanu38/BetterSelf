@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import '../viewmodels/money_viewmodel.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-class MoneyScreen extends StatelessWidget {
-  const MoneyScreen({super.key});
+class MoneyPlanningScreen extends StatelessWidget {
+  const MoneyPlanningScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
