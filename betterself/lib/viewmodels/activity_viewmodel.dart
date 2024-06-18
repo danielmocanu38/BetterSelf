@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/activity.dart';
 
 class ActivityViewModel extends ChangeNotifier {
@@ -8,7 +9,9 @@ class ActivityViewModel extends ChangeNotifier {
   List<Activity> get weeklyActivities => _weeklyActivities;
   List<Activity> get calendarActivities => _calendarActivities;
 
-  void addWeeklyActivity(Activity activity) {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  void addWeeklyActivity(Activity activity) async {
     _weeklyActivities.add(activity);
     _weeklyActivities.sort((a, b) {
       final aTime = a.startTime.hour * 60 + a.startTime.minute;
@@ -16,24 +19,34 @@ class ActivityViewModel extends ChangeNotifier {
       return aTime.compareTo(bTime);
     });
     notifyListeners();
+    await _firestore
+        .collection('weeklyActivities')
+        .doc(activity.id)
+        .set(activity.toMap());
   }
 
-  void addCalendarActivity(Activity activity) {
+  void addCalendarActivity(Activity activity) async {
     _calendarActivities.add(activity);
     notifyListeners();
+    await _firestore
+        .collection('calendarActivities')
+        .doc(activity.id)
+        .set(activity.toMap());
   }
 
-  void removeWeeklyActivity(String id) {
+  void removeWeeklyActivity(String id) async {
     _weeklyActivities.removeWhere((activity) => activity.id == id);
     notifyListeners();
+    await _firestore.collection('weeklyActivities').doc(id).delete();
   }
 
-  void removeCalendarActivity(String id) {
+  void removeCalendarActivity(String id) async {
     _calendarActivities.removeWhere((activity) => activity.id == id);
     notifyListeners();
+    await _firestore.collection('calendarActivities').doc(id).delete();
   }
 
-  void updateWeeklyActivity(Activity activity) {
+  void updateWeeklyActivity(Activity activity) async {
     final index = _weeklyActivities.indexWhere((a) => a.id == activity.id);
     if (index != -1) {
       _weeklyActivities[index] = activity;
@@ -43,14 +56,22 @@ class ActivityViewModel extends ChangeNotifier {
         return aTime.compareTo(bTime);
       });
       notifyListeners();
+      await _firestore
+          .collection('weeklyActivities')
+          .doc(activity.id)
+          .set(activity.toMap());
     }
   }
 
-  void updateCalendarActivity(Activity activity) {
+  void updateCalendarActivity(Activity activity) async {
     final index = _calendarActivities.indexWhere((a) => a.id == activity.id);
     if (index != -1) {
       _calendarActivities[index] = activity;
       notifyListeners();
+      await _firestore
+          .collection('calendarActivities')
+          .doc(activity.id)
+          .set(activity.toMap());
     }
   }
 
@@ -64,14 +85,16 @@ class ActivityViewModel extends ChangeNotifier {
     return _calendarActivities.where((activity) {
       return isSameDay(activity.dateTime, day) ||
           (activity.isRoutine &&
-              (activity.repeatFrequency == 'Daily' ||
-                  (activity.repeatFrequency == 'Weekly' &&
-                      activity.dateTime.weekday == day.weekday) ||
-                  (activity.repeatFrequency == 'Monthly' &&
-                      activity.dateTime.day == day.day) ||
-                  (activity.repeatFrequency == 'Yearly' &&
-                      activity.dateTime.month == day.month &&
-                      activity.dateTime.day == day.day)));
+                  (activity.repeatFrequency == 'Only Once' &&
+                      isSameDay(activity.dateTime, day)) ||
+              (activity.repeatFrequency == 'Daily') ||
+              (activity.repeatFrequency == 'Weekly' &&
+                  activity.dateTime.weekday == day.weekday) ||
+              (activity.repeatFrequency == 'Monthly' &&
+                  activity.dateTime.day == day.day) ||
+              (activity.repeatFrequency == 'Yearly' &&
+                  activity.dateTime.month == day.month &&
+                  activity.dateTime.day == day.day));
     }).toList();
   }
 
@@ -79,5 +102,35 @@ class ActivityViewModel extends ChangeNotifier {
     return date1.year == date2.year &&
         date1.month == date2.month &&
         date1.day == date2.day;
+  }
+
+  Future<void> loadActivities(String userId) async {
+    final weeklySnapshot = await _firestore
+        .collection('weeklyActivities')
+        .where('userId', isEqualTo: userId)
+        .get();
+    final calendarSnapshot = await _firestore
+        .collection('calendarActivities')
+        .where('userId', isEqualTo: userId)
+        .get();
+
+    _weeklyActivities.clear();
+    _calendarActivities.clear();
+
+    for (var doc in weeklySnapshot.docs) {
+      _weeklyActivities.add(Activity.fromMap(doc.data()));
+    }
+
+    for (var doc in calendarSnapshot.docs) {
+      _calendarActivities.add(Activity.fromMap(doc.data()));
+    }
+
+    notifyListeners();
+  }
+
+  void clearActivities() {
+    _weeklyActivities.clear();
+    _calendarActivities.clear();
+    notifyListeners();
   }
 }

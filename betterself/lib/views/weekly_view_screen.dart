@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../viewmodels/activity_viewmodel.dart';
 import '../models/activity.dart';
 
@@ -23,16 +24,18 @@ class WeeklyViewScreenState extends State<WeeklyViewScreen> {
   final List<ScrollController> _scrollControllers =
       List.generate(7, (index) => ScrollController());
 
-  void _addActivity(int dayIndex) {
-    TextEditingController titleController = TextEditingController();
-    TextEditingController descriptionController = TextEditingController();
-    TimeOfDay? startTime;
-    TimeOfDay? endTime;
+  void _addOrEditActivity({int? dayIndex, Activity? activity}) {
+    TextEditingController titleController =
+        TextEditingController(text: activity?.title ?? '');
+    TextEditingController descriptionController =
+        TextEditingController(text: activity?.description ?? '');
+    TimeOfDay? startTime = activity?.startTime;
+    TimeOfDay? endTime = activity?.endTime;
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Add Activity'),
+        title: Text(activity == null ? 'Add Activity' : 'Edit Activity'),
         content: StatefulBuilder(
           builder: (context, setState) => Column(
             mainAxisSize: MainAxisSize.min,
@@ -89,25 +92,67 @@ class WeeklyViewScreenState extends State<WeeklyViewScreen> {
         actions: [
           TextButton(
             onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
               if (startTime != null && endTime != null) {
-                final viewModel =
-                    Provider.of<ActivityViewModel>(context, listen: false);
-                viewModel.addWeeklyActivity(Activity(
-                  id: DateTime.now().toString(),
-                  title: titleController.text,
-                  description: descriptionController.text,
-                  dateTime: DateTime.now().add(
-                      Duration(days: dayIndex - DateTime.now().weekday + 1)),
-                  isRoutine: false,
-                  repeatFrequency: '',
-                  startTime: startTime!,
-                  endTime: endTime!,
-                ));
+                final user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  final viewModel =
+                      Provider.of<ActivityViewModel>(context, listen: false);
+                  if (activity == null) {
+                    final newActivity = Activity(
+                      id: DateTime.now().toString(),
+                      userId: user.uid,
+                      title: titleController.text,
+                      description: descriptionController.text,
+                      dateTime: DateTime.now().add(Duration(
+                          days: dayIndex! - DateTime.now().weekday + 1)),
+                      isRoutine: false,
+                      repeatFrequency: '',
+                      startTime: startTime!,
+                      endTime: endTime!,
+                    );
+                    viewModel.addWeeklyActivity(newActivity);
+                  } else {
+                    final updatedActivity = Activity(
+                      id: activity.id,
+                      userId: activity.userId,
+                      title: titleController.text,
+                      description: descriptionController.text,
+                      dateTime: activity.dateTime,
+                      isRoutine: activity.isRoutine,
+                      repeatFrequency: activity.repeatFrequency,
+                      startTime: startTime!,
+                      endTime: endTime!,
+                    );
+                    viewModel.updateWeeklyActivity(updatedActivity);
+                  }
+                }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please select start and end times.'),
+                  ),
+                );
               }
               Navigator.pop(context);
             },
-            child: const Text('Add'),
+            child: const Text('Save'),
           ),
+          if (activity != null)
+            TextButton(
+              onPressed: () {
+                final viewModel =
+                    Provider.of<ActivityViewModel>(context, listen: false);
+                viewModel.removeWeeklyActivity(activity.id);
+                Navigator.pop(context);
+              },
+              child: const Text('Delete'),
+            ),
         ],
       ),
     );
@@ -165,7 +210,32 @@ class WeeklyViewScreenState extends State<WeeklyViewScreen> {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(activity.description),
-                                )
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.edit),
+                                      onPressed: () {
+                                        _addOrEditActivity(
+                                          dayIndex: index,
+                                          activity: activity,
+                                        );
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete),
+                                      onPressed: () {
+                                        final viewModel =
+                                            Provider.of<ActivityViewModel>(
+                                                context,
+                                                listen: false);
+                                        viewModel
+                                            .removeWeeklyActivity(activity.id);
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ],
                             );
                           },
@@ -175,7 +245,7 @@ class WeeklyViewScreenState extends State<WeeklyViewScreen> {
                     IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () {
-                        _addActivity(index);
+                        _addOrEditActivity(dayIndex: index);
                       },
                     ),
                   ],

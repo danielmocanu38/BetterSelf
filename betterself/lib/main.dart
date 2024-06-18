@@ -9,6 +9,8 @@ import 'viewmodels/todo_viewmodel.dart';
 import 'views/home_screen.dart';
 import 'views/login_screen.dart';
 import 'views/register_screen.dart';
+import 'views/weekly_view_screen.dart';
+import 'views/calendar_view_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +25,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ActivityViewModel()),
+        ChangeNotifierProvider(
+          create: (_) => ActivityViewModel(),
+        ),
         ChangeNotifierProvider(create: (_) => MoneyViewModel()),
         ChangeNotifierProvider(create: (_) => DietViewModel()),
         ChangeNotifierProvider(create: (_) => TodoViewModel()),
@@ -42,6 +46,8 @@ class MyApp extends StatelessWidget {
           '/login': (context) => const LoginScreen(),
           '/register': (context) => const RegisterScreen(),
           '/home': (context) => const HomeScreen(),
+          '/weekly-view': (context) => const WeeklyViewScreen(),
+          '/calendar-view': (context) => const CalendarViewScreen(),
         },
       ),
     );
@@ -61,6 +67,8 @@ class AuthGate extends StatelessWidget {
           if (user == null) {
             return const LoginScreen();
           } else {
+            Provider.of<ActivityViewModel>(context, listen: false)
+                .loadActivities(user.uid);
             return const HomeScreen();
           }
         } else {

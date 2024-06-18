@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import '../viewmodels/activity_viewmodel.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,16 +21,24 @@ class LoginScreenState extends State<LoginScreen> {
         email: _emailController.text,
         password: _passwordController.text,
       );
-      if (!mounted) return;
+      if (!mounted) return; // Ensure widget is still mounted
       if (userCredential.user != null) {
+        Provider.of<ActivityViewModel>(context, listen: false)
+            .loadActivities(userCredential.user!.uid);
         Navigator.pushReplacementNamed(context, '/home');
       }
     } catch (e) {
-      if (!mounted) return;
+      if (!mounted) return; // Ensure widget is still mounted
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),
       );
     }
+  }
+
+  void _logout() async {
+    await _auth.signOut();
+    if (!mounted) return; // Ensure widget is still mounted
+    Provider.of<ActivityViewModel>(context, listen: false).clearActivities();
   }
 
   @override
@@ -64,6 +74,10 @@ class LoginScreenState extends State<LoginScreen> {
                 Navigator.pushNamed(context, '/register');
               },
               child: const Text("Don't have an account? Register"),
+            ),
+            ElevatedButton(
+              onPressed: _logout,
+              child: const Text('Logout'),
             ),
           ],
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../models/activity.dart';
 import '../viewmodels/activity_viewmodel.dart';
@@ -17,23 +18,27 @@ class CalendarViewScreenState extends State<CalendarViewScreen> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
 
   final List<String> frequencyOptions = [
+    'Only Once',
     'Daily',
     'Weekly',
     'Monthly',
     'Yearly',
   ];
 
-  void _addActivity(DateTime selectedDate) {
-    TextEditingController titleController = TextEditingController();
-    TextEditingController descriptionController = TextEditingController();
-    String selectedFrequency = frequencyOptions.first;
-    TimeOfDay? startTime;
-    TimeOfDay? endTime;
+  void _addOrEditActivity({DateTime? selectedDate, Activity? activity}) {
+    TextEditingController titleController =
+        TextEditingController(text: activity?.title ?? '');
+    TextEditingController descriptionController =
+        TextEditingController(text: activity?.description ?? '');
+    String selectedFrequency =
+        activity?.repeatFrequency ?? frequencyOptions.first;
+    TimeOfDay? startTime = activity?.startTime;
+    TimeOfDay? endTime = activity?.endTime;
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Add Activity'),
+        title: Text(activity == null ? 'Add Activity' : 'Edit Activity'),
         content: StatefulBuilder(
           builder: (context, setState) => Column(
             mainAxisSize: MainAxisSize.min,
@@ -112,20 +117,40 @@ class CalendarViewScreenState extends State<CalendarViewScreen> {
           TextButton(
             onPressed: () {
               if (startTime != null && endTime != null) {
-                final activity = Activity(
-                  id: DateTime.now().toString(),
-                  title: titleController.text,
-                  description: descriptionController.text,
-                  dateTime: selectedDate,
-                  isRoutine: true,
-                  repeatFrequency: selectedFrequency,
-                  startTime: startTime!,
-                  endTime: endTime!,
-                );
-                final viewModel =
-                    Provider.of<ActivityViewModel>(context, listen: false);
-                viewModel.addCalendarActivity(activity);
-                Navigator.pop(context);
+                final user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  if (activity == null) {
+                    final newActivity = Activity(
+                      id: DateTime.now().toString(),
+                      userId: user.uid,
+                      title: titleController.text,
+                      description: descriptionController.text,
+                      dateTime: selectedDate!,
+                      isRoutine: selectedFrequency != 'Only Once',
+                      repeatFrequency: selectedFrequency,
+                      startTime: startTime!,
+                      endTime: endTime!,
+                    );
+                    final viewModel =
+                        Provider.of<ActivityViewModel>(context, listen: false);
+                    viewModel.addCalendarActivity(newActivity);
+                  } else {
+                    final updatedActivity = Activity(
+                      id: activity.id,
+                      userId: activity.userId,
+                      title: titleController.text,
+                      description: descriptionController.text,
+                      dateTime: activity.dateTime,
+                      isRoutine: activity.isRoutine,
+                      repeatFrequency: selectedFrequency,
+                      startTime: startTime!,
+                      endTime: endTime!,
+                    );
+                    final viewModel =
+                        Provider.of<ActivityViewModel>(context, listen: false);
+                    viewModel.updateCalendarActivity(updatedActivity);
+                  }
+                }
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -133,9 +158,20 @@ class CalendarViewScreenState extends State<CalendarViewScreen> {
                   ),
                 );
               }
+              Navigator.pop(context);
             },
-            child: const Text('Add'),
+            child: const Text('Save'),
           ),
+          if (activity != null)
+            TextButton(
+              onPressed: () {
+                final viewModel =
+                    Provider.of<ActivityViewModel>(context, listen: false);
+                viewModel.removeCalendarActivity(activity.id);
+                Navigator.pop(context);
+              },
+              child: const Text('Delete'),
+            ),
         ],
       ),
     );
@@ -200,6 +236,26 @@ class CalendarViewScreenState extends State<CalendarViewScreen> {
                 return ListTile(
                   title: Text(activity.title),
                   subtitle: Text(activity.description),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          _addOrEditActivity(activity: activity);
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          final viewModel = Provider.of<ActivityViewModel>(
+                              context,
+                              listen: false);
+                          viewModel.removeCalendarActivity(activity.id);
+                        },
+                      ),
+                    ],
+                  ),
                 );
               },
             ),
@@ -207,8 +263,9 @@ class CalendarViewScreenState extends State<CalendarViewScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed:
-            _selectedDay != null ? () => _addActivity(_selectedDay!) : null,
+        onPressed: _selectedDay != null
+            ? () => _addOrEditActivity(selectedDate: _selectedDay!)
+            : null,
         child: const Icon(Icons.add),
       ),
     );
