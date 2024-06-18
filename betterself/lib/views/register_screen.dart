@@ -21,18 +21,16 @@ class RegisterScreenState extends State<RegisterScreen> {
       ))
           .user;
 
+      if (!mounted) return;
+
       if (user != null) {
-        if (!mounted) return; // Check if the widget is still mounted
         Navigator.pop(context);
       } else {
-        // Show error message
-        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to register')),
         );
       }
     } catch (e) {
-      // Show error message
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),

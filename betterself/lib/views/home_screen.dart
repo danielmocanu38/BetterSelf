@@ -28,9 +28,9 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<void> _logout() async {
+  Future<void> _signOut() async {
     await FirebaseAuth.instance.signOut();
-    if (!mounted) return; // Check if the widget is still mounted
+    if (!mounted) return;
     Navigator.pushReplacementNamed(context, '/login');
   }
 
@@ -42,7 +42,7 @@ class HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: _logout,
+            onPressed: _signOut,
           ),
         ],
       ),

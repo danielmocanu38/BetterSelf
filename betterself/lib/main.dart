@@ -37,32 +37,39 @@ class MyApp extends StatelessWidget {
                 bodyMedium: const TextStyle(),
               ),
         ),
-        home: const AuthWrapper(),
+        home: const AuthGate(), // Use AuthGate here
         routes: {
           '/login': (context) => const LoginScreen(),
           '/register': (context) => const RegisterScreen(),
-          '/home': (context) => const HomeScreen(), // Added this line
+          '/home': (context) => const HomeScreen(), // Add this line
         },
       ),
     );
   }
 }
 
-class AuthWrapper extends StatelessWidget {
-  const AuthWrapper({super.key});
+class AuthGate extends StatelessWidget {
+  const AuthGate({super.key});
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator(); // Show a loading indicator while checking auth state
+        if (snapshot.connectionState == ConnectionState.active) {
+          final user = snapshot.data;
+          if (user == null) {
+            return const LoginScreen();
+          } else {
+            return const HomeScreen();
+          }
+        } else {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
         }
-        if (snapshot.hasData) {
-          return const HomeScreen(); // User is logged in, navigate to HomeScreen
-        }
-        return const LoginScreen(); // User is not logged in, navigate to LoginScreen
       },
     );
   }
