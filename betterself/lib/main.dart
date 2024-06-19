@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'viewmodels/activity_viewmodel.dart';
 import 'viewmodels/money_viewmodel.dart';
 import 'viewmodels/todo_viewmodel.dart';
-import 'viewmodels/diet_viewmodel.dart'; // Add this import
+import 'viewmodels/diet_viewmodel.dart';
 import 'views/home_screen.dart';
 import 'views/login_screen.dart';
 import 'views/register_screen.dart';
@@ -13,9 +13,11 @@ import 'views/weekly_view_screen.dart';
 import 'views/calendar_view_screen.dart';
 import 'views/money_planning_screen.dart';
 import 'views/budget_management_screen.dart';
-import 'views/diet_creation_screen.dart'; // Add this import
-import 'views/dish_creation_screen.dart'; // Add this import
-import 'views/diet_planning_screen.dart'; // Add this import
+import 'views/diet_creation_screen.dart';
+import 'views/dish_creation_screen.dart';
+import 'views/diet_planning_screen.dart';
+import 'views/todo_screen.dart';
+import 'views/task_history_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,8 +37,7 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(create: (_) => MoneyViewModel()),
         ChangeNotifierProvider(create: (_) => TodoViewModel()),
-        ChangeNotifierProvider(
-            create: (_) => DietViewModel()), // Add this provider
+        ChangeNotifierProvider(create: (_) => DietViewModel()),
       ],
       child: MaterialApp(
         title: 'BetterSelf',
@@ -56,11 +57,11 @@ class MyApp extends StatelessWidget {
           '/calendar-view': (context) => const CalendarViewScreen(),
           '/money-planning': (context) => const MoneyPlanningScreen(),
           '/budget-management': (context) => BudgetManagementScreen(),
-          '/diet-creation': (context) =>
-              const DietCreationScreen(), // Remove const
-          '/dish-creation': (context) =>
-              const DishCreationScreen(), // Remove const
+          '/diet-creation': (context) => const DietCreationScreen(),
+          '/dish-creation': (context) => const DishCreationScreen(),
           '/diet-planning': (context) => const DietPlanningScreen(),
+          '/todo': (context) => const TodoScreen(),
+          '/task-history': (context) => const TaskHistoryScreen(),
         },
       ),
     );
@@ -79,23 +80,41 @@ class AuthGate extends StatelessWidget {
           final user = snapshot.data;
           if (user == null) {
             // Clear data on logout
-            Provider.of<ActivityViewModel>(context, listen: false)
-                .clearActivities();
-            Provider.of<MoneyViewModel>(context, listen: false).clearData();
-            Provider.of<DietViewModel>(context, listen: false)
-                .clearData(); // Clear diet data
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Provider.of<ActivityViewModel>(context, listen: false)
+                  .clearActivities();
+              Provider.of<MoneyViewModel>(context, listen: false).clearData();
+              Provider.of<DietViewModel>(context, listen: false).clearData();
+              Provider.of<TodoViewModel>(context, listen: false).clearData();
+            });
             return const LoginScreen();
           } else {
             // Load user-specific data on login
-            Provider.of<ActivityViewModel>(context, listen: false)
-                .loadActivities(user.uid);
-            Provider.of<MoneyViewModel>(context, listen: false)
-                .loadExpensesAndBudget(user.uid);
-            Provider.of<DietViewModel>(context, listen: false)
-                .loadDishes(user.uid); // Load dishes data
-            Provider.of<DietViewModel>(context, listen: false)
-                .loadDiets(user.uid); // Load diets data
-            return const HomeScreen();
+            return FutureBuilder(
+              future: Future.wait([
+                Provider.of<ActivityViewModel>(context, listen: false)
+                    .loadActivities(user.uid),
+                Provider.of<MoneyViewModel>(context, listen: false)
+                    .loadExpensesAndBudget(user.uid),
+                Provider.of<DietViewModel>(context, listen: false)
+                    .loadDishes(user.uid),
+                Provider.of<DietViewModel>(context, listen: false)
+                    .loadDiets(user.uid),
+                Provider.of<TodoViewModel>(context, listen: false)
+                    .loadTasks(user.uid),
+              ]),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return const HomeScreen();
+                } else {
+                  return const Scaffold(
+                    body: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+              },
+            );
           }
         } else {
           return const Scaffold(
