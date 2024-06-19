@@ -171,7 +171,7 @@ class WeeklyViewScreenState extends State<WeeklyViewScreen> {
     final viewModel = Provider.of<ActivityViewModel>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Weekly View'),
+        title: const Text('Weekly Planner'),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.horizontal,

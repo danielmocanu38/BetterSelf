@@ -35,12 +35,6 @@ class LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void _logout() async {
-    await _auth.signOut();
-    if (!mounted) return; // Ensure widget is still mounted
-    Provider.of<ActivityViewModel>(context, listen: false).clearActivities();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,10 +68,6 @@ class LoginScreenState extends State<LoginScreen> {
                 Navigator.pushNamed(context, '/register');
               },
               child: const Text("Don't have an account? Register"),
-            ),
-            ElevatedButton(
-              onPressed: _logout,
-              child: const Text('Logout'),
             ),
           ],
         ),

@@ -182,7 +182,7 @@ class CalendarViewScreenState extends State<CalendarViewScreen> {
     final viewModel = Provider.of<ActivityViewModel>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Calendar View'),
+        title: const Text('Calendar Planner'),
       ),
       body: Column(
         children: [

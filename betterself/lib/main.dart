@@ -11,6 +11,8 @@ import 'views/login_screen.dart';
 import 'views/register_screen.dart';
 import 'views/weekly_view_screen.dart';
 import 'views/calendar_view_screen.dart';
+import 'views/money_planning_screen.dart';
+import 'views/budget_management_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +50,8 @@ class MyApp extends StatelessWidget {
           '/home': (context) => const HomeScreen(),
           '/weekly-view': (context) => const WeeklyViewScreen(),
           '/calendar-view': (context) => const CalendarViewScreen(),
+          '/money-planning': (context) => const MoneyPlanningScreen(),
+          '/budget-management': (context) => BudgetManagementScreen(),
         },
       ),
     );
@@ -65,10 +69,17 @@ class AuthGate extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.active) {
           final user = snapshot.data;
           if (user == null) {
+            // Clear data on logout
+            Provider.of<ActivityViewModel>(context, listen: false)
+                .clearActivities();
+            Provider.of<MoneyViewModel>(context, listen: false).clearData();
             return const LoginScreen();
           } else {
+            // Load user-specific data on login
             Provider.of<ActivityViewModel>(context, listen: false)
                 .loadActivities(user.uid);
+            Provider.of<MoneyViewModel>(context, listen: false)
+                .loadExpensesAndBudget(user.uid);
             return const HomeScreen();
           }
         } else {
