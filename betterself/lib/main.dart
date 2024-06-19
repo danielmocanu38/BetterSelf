@@ -57,11 +57,10 @@ class MyApp extends StatelessWidget {
           '/money-planning': (context) => const MoneyPlanningScreen(),
           '/budget-management': (context) => BudgetManagementScreen(),
           '/diet-creation': (context) =>
-              const DietCreationScreen(), // Add this route
+              const DietCreationScreen(), // Remove const
           '/dish-creation': (context) =>
-              const DishCreationScreen(), // Add this route
-          '/diet-planning': (context) =>
-              const DietPlanningScreen(), // Add this route
+              const DishCreationScreen(), // Remove const
+          '/diet-planning': (context) => const DietPlanningScreen(),
         },
       ),
     );

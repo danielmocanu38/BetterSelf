@@ -18,8 +18,10 @@ class DietViewModel extends ChangeNotifier {
     // Initialize with empty lists
   }
 
-  void addDish(Dish dish) async {
-    final user = FirebaseAuth.instance.currentUser;
+  User? get currentUser => FirebaseAuth.instance.currentUser;
+
+  Future<void> addDish(Dish dish) async {
+    final user = currentUser;
     if (user != null) {
       dish.userId = user.uid;
       _dishes.add(dish);
@@ -28,8 +30,8 @@ class DietViewModel extends ChangeNotifier {
     }
   }
 
-  void removeDish(String id) async {
-    final user = FirebaseAuth.instance.currentUser;
+  Future<void> removeDish(String id) async {
+    final user = currentUser;
     if (user != null) {
       _dishes.removeWhere((dish) => dish.id == id);
       notifyListeners();
@@ -37,8 +39,8 @@ class DietViewModel extends ChangeNotifier {
     }
   }
 
-  void updateDish(Dish dish) async {
-    final user = FirebaseAuth.instance.currentUser;
+  Future<void> updateDish(Dish dish) async {
+    final user = currentUser;
     if (user != null) {
       final index = _dishes.indexWhere((d) => d.id == dish.id);
       if (index != -1) {
@@ -49,8 +51,8 @@ class DietViewModel extends ChangeNotifier {
     }
   }
 
-  void addDiet(Diet diet) async {
-    final user = FirebaseAuth.instance.currentUser;
+  Future<void> addDiet(Diet diet) async {
+    final user = currentUser;
     if (user != null) {
       diet.userId = user.uid;
       _diets.add(diet);
@@ -59,8 +61,8 @@ class DietViewModel extends ChangeNotifier {
     }
   }
 
-  void removeDiet(String id) async {
-    final user = FirebaseAuth.instance.currentUser;
+  Future<void> removeDiet(String id) async {
+    final user = currentUser;
     if (user != null) {
       _diets.removeWhere((diet) => diet.id == id);
       notifyListeners();
@@ -68,8 +70,8 @@ class DietViewModel extends ChangeNotifier {
     }
   }
 
-  void updateDiet(Diet diet) async {
-    final user = FirebaseAuth.instance.currentUser;
+  Future<void> updateDiet(Diet diet) async {
+    final user = currentUser;
     if (user != null) {
       final index = _diets.indexWhere((d) => d.id == diet.id);
       if (index != -1) {
@@ -80,8 +82,8 @@ class DietViewModel extends ChangeNotifier {
     }
   }
 
-  void addMealToDiet(String dietId, Meal meal) async {
-    final user = FirebaseAuth.instance.currentUser;
+  Future<void> addMealToDiet(String dietId, Meal meal) async {
+    final user = currentUser;
     if (user != null) {
       final dietIndex = _diets.indexWhere((d) => d.id == dietId);
       if (dietIndex != -1) {
@@ -95,8 +97,8 @@ class DietViewModel extends ChangeNotifier {
     }
   }
 
-  void removeMealFromDiet(String dietId, String mealId) async {
-    final user = FirebaseAuth.instance.currentUser;
+  Future<void> removeMealFromDiet(String dietId, String mealId) async {
+    final user = currentUser;
     if (user != null) {
       final dietIndex = _diets.indexWhere((d) => d.id == dietId);
       if (dietIndex != -1) {
@@ -137,6 +139,12 @@ class DietViewModel extends ChangeNotifier {
       _diets.add(Diet.fromMap(doc.data()));
     }
 
+    notifyListeners();
+  }
+
+  Future<void> loadData(String userId) async {
+    await loadDishes(userId);
+    await loadDiets(userId);
     notifyListeners();
   }
 
