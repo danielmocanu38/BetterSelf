@@ -1,41 +1,41 @@
-// lib/models/meal.dart
-class Ingredient {
-  String name;
-  String type;
-  int calories;
-  double price;
-
-  Ingredient({
-    required this.name,
-    required this.type,
-    required this.calories,
-    required this.price,
-  });
-}
+import 'dish.dart';
 
 class Meal {
-  String id;
-  String name;
-  String type; // e.g., breakfast, lunch, dinner
-  int calories;
-  double price;
-  bool isPrepared;
-  List<Ingredient> ingredients;
+  final String id;
+  final Dish dish;
+  final DateTime servingTime;
 
   Meal({
     required this.id,
-    required this.name,
-    required this.type,
-    required this.calories,
-    required this.price,
-    required this.isPrepared,
-    this.ingredients = const [],
+    required this.dish,
+    required this.servingTime,
   });
 
-  void calculateProperties() {
-    if (ingredients.isNotEmpty) {
-      calories = ingredients.fold(0, (sum, item) => sum + item.calories);
-      price = ingredients.fold(0, (sum, item) => sum + item.price);
-    }
+  Meal copyWith({
+    String? id,
+    Dish? dish,
+    DateTime? servingTime,
+  }) {
+    return Meal(
+      id: id ?? this.id,
+      dish: dish ?? this.dish,
+      servingTime: servingTime ?? this.servingTime,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'dish': dish.toMap(),
+      'servingTime': servingTime.toIso8601String(),
+    };
+  }
+
+  factory Meal.fromMap(Map<String, dynamic> map) {
+    return Meal(
+      id: map['id'],
+      dish: Dish.fromMap(map['dish']),
+      servingTime: DateTime.parse(map['servingTime']),
+    );
   }
 }

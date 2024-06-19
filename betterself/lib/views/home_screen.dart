@@ -18,7 +18,7 @@ class HomeScreenState extends State<HomeScreen> {
   static final List<Widget> _widgetOptions = <Widget>[
     const ActivityPlanningScreen(),
     const MoneyPlanningScreen(),
-    const DietPlanningScreen(),
+    const DietPlanningScreen(), // Ensure this is correct
     const TodoScreen(),
   ];
 

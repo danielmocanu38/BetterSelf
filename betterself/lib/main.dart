@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'viewmodels/activity_viewmodel.dart';
 import 'viewmodels/money_viewmodel.dart';
-import 'viewmodels/diet_viewmodel.dart';
 import 'viewmodels/todo_viewmodel.dart';
+import 'viewmodels/diet_viewmodel.dart'; // Add this import
 import 'views/home_screen.dart';
 import 'views/login_screen.dart';
 import 'views/register_screen.dart';
@@ -13,6 +13,9 @@ import 'views/weekly_view_screen.dart';
 import 'views/calendar_view_screen.dart';
 import 'views/money_planning_screen.dart';
 import 'views/budget_management_screen.dart';
+import 'views/diet_creation_screen.dart'; // Add this import
+import 'views/dish_creation_screen.dart'; // Add this import
+import 'views/diet_planning_screen.dart'; // Add this import
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,8 +34,9 @@ class MyApp extends StatelessWidget {
           create: (_) => ActivityViewModel(),
         ),
         ChangeNotifierProvider(create: (_) => MoneyViewModel()),
-        ChangeNotifierProvider(create: (_) => DietViewModel()),
         ChangeNotifierProvider(create: (_) => TodoViewModel()),
+        ChangeNotifierProvider(
+            create: (_) => DietViewModel()), // Add this provider
       ],
       child: MaterialApp(
         title: 'BetterSelf',
@@ -52,6 +56,12 @@ class MyApp extends StatelessWidget {
           '/calendar-view': (context) => const CalendarViewScreen(),
           '/money-planning': (context) => const MoneyPlanningScreen(),
           '/budget-management': (context) => BudgetManagementScreen(),
+          '/diet-creation': (context) =>
+              const DietCreationScreen(), // Add this route
+          '/dish-creation': (context) =>
+              const DishCreationScreen(), // Add this route
+          '/diet-planning': (context) =>
+              const DietPlanningScreen(), // Add this route
         },
       ),
     );
@@ -73,6 +83,8 @@ class AuthGate extends StatelessWidget {
             Provider.of<ActivityViewModel>(context, listen: false)
                 .clearActivities();
             Provider.of<MoneyViewModel>(context, listen: false).clearData();
+            Provider.of<DietViewModel>(context, listen: false)
+                .clearData(); // Clear diet data
             return const LoginScreen();
           } else {
             // Load user-specific data on login
@@ -80,6 +92,10 @@ class AuthGate extends StatelessWidget {
                 .loadActivities(user.uid);
             Provider.of<MoneyViewModel>(context, listen: false)
                 .loadExpensesAndBudget(user.uid);
+            Provider.of<DietViewModel>(context, listen: false)
+                .loadDishes(user.uid); // Load dishes data
+            Provider.of<DietViewModel>(context, listen: false)
+                .loadDiets(user.uid); // Load diets data
             return const HomeScreen();
           }
         } else {
