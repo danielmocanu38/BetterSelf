@@ -111,7 +111,14 @@ class MoneyPlanningScreenState extends State<MoneyPlanningScreen> {
                                     IconButton(
                                       icon: const Icon(Icons.edit),
                                       onPressed: () {
-                                        // Implement edit functionality
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ExpenseCreationScreen(
+                                                    expense: expense),
+                                          ),
+                                        );
                                       },
                                     ),
                                     IconButton(

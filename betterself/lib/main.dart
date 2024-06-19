@@ -32,9 +32,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => ActivityViewModel(),
-        ),
+        ChangeNotifierProvider(create: (_) => ActivityViewModel()),
         ChangeNotifierProvider(create: (_) => MoneyViewModel()),
         ChangeNotifierProvider(create: (_) => TodoViewModel()),
         ChangeNotifierProvider(create: (_) => DietViewModel()),

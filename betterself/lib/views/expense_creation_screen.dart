@@ -48,7 +48,7 @@ class ExpenseCreationScreenState extends State<ExpenseCreationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Expense'),
+        title: Text(widget.expense == null ? 'Add Expense' : 'Edit Expense'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

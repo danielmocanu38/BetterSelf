@@ -69,6 +69,26 @@ class MoneyViewModel extends ChangeNotifier {
     }
   }
 
+  void updateIncomeSource(IncomeSource source) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final index = _budget.incomeSources.indexWhere((s) => s.id == source.id);
+      if (index != -1) {
+        final oldSource = _budget.incomeSources[index];
+        _budget.totalAmount -= convertCurrency(
+            oldSource.amount, oldSource.currency, _selectedCurrency);
+        _budget.incomeSources[index] = source;
+        _budget.totalAmount +=
+            convertCurrency(source.amount, source.currency, _selectedCurrency);
+        notifyListeners();
+        await _firestore
+            .collection('budgets')
+            .doc(user.uid)
+            .set(_budget.toMap());
+      }
+    }
+  }
+
   void setBudget(double amount) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {

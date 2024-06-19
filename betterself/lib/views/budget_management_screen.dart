@@ -88,11 +88,23 @@ class BudgetManagementScreen extends StatelessWidget {
                         title: Text(incomeSource.source),
                         subtitle: Text(
                             '${incomeSource.amount} ${incomeSource.currency}'),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            viewModel.removeIncomeSource(incomeSource.id);
-                          },
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () {
+                                _showEditIncomeSourceDialog(
+                                    context, incomeSource);
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                viewModel.removeIncomeSource(incomeSource.id);
+                              },
+                            ),
+                          ],
                         ),
                       );
                     },
@@ -103,6 +115,83 @@ class BudgetManagementScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _showEditIncomeSourceDialog(
+      BuildContext context, IncomeSource incomeSource) {
+    final TextEditingController editSourceController =
+        TextEditingController(text: incomeSource.source);
+    final TextEditingController editAmountController =
+        TextEditingController(text: incomeSource.amount.toString());
+    String editSelectedCurrency = incomeSource.currency;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Income Source'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: editSourceController,
+                decoration: const InputDecoration(labelText: 'Income Source'),
+              ),
+              const SizedBox(height: 16.0),
+              TextField(
+                controller: editAmountController,
+                decoration: const InputDecoration(labelText: 'Income Amount'),
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                ],
+              ),
+              const SizedBox(height: 16.0),
+              DropdownButtonFormField<String>(
+                value: editSelectedCurrency,
+                items: currencyOptions.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  editSelectedCurrency = newValue!;
+                },
+                decoration: const InputDecoration(labelText: 'Currency'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  final updatedIncomeSource = IncomeSource(
+                    id: incomeSource.id,
+                    userId: user.uid,
+                    source: editSourceController.text,
+                    amount: double.parse(editAmountController.text),
+                    currency: editSelectedCurrency,
+                  );
+                  final viewModel =
+                      Provider.of<MoneyViewModel>(context, listen: false);
+                  viewModel.updateIncomeSource(updatedIncomeSource);
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Save Changes'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
