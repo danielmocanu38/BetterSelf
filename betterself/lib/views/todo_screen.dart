@@ -129,7 +129,7 @@ class TodoScreenState extends State<TodoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('To-Do List'),
+        title: const Text('Tasks Planner'),
         actions: [
           IconButton(
             icon: const Icon(Icons.history),
@@ -199,7 +199,7 @@ class TodoScreenState extends State<TodoScreen> {
                               ),
                               _buildQuadrantButton(
                                 context,
-                                'Not Urgent & Less Important',
+                                'Not Urgent & Not Important',
                                 'Eliminate',
                                 3,
                                 Colors.orange,
