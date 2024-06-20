@@ -38,7 +38,15 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BetterSelf'),
+        title: const Text(
+          'BetterSelf',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+        backgroundColor: Colors.teal,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),

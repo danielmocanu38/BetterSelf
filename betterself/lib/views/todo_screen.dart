@@ -168,9 +168,21 @@ class TodoScreenState extends State<TodoScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               _buildQuadrantButton(
-                                  context, 'Urgent & Important', 0),
+                                context,
+                                'Urgent & Important',
+                                'Do Now',
+                                0,
+                                Colors.red,
+                                Icons.check_circle,
+                              ),
                               _buildQuadrantButton(
-                                  context, 'Not Urgent & Important', 1),
+                                context,
+                                'Less Urgent & Important',
+                                'Schedule',
+                                1,
+                                Colors.blue,
+                                Icons.schedule,
+                              ),
                             ],
                           ),
                           const SizedBox(height: 8),
@@ -178,9 +190,21 @@ class TodoScreenState extends State<TodoScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               _buildQuadrantButton(
-                                  context, 'Urgent & Not Important', 2),
+                                context,
+                                'Urgent & Less Important',
+                                'Delegate',
+                                2,
+                                Colors.green,
+                                Icons.person_add,
+                              ),
                               _buildQuadrantButton(
-                                  context, 'Not Urgent & Not Important', 3),
+                                context,
+                                'Not Urgent & Less Important',
+                                'Eliminate',
+                                3,
+                                Colors.orange,
+                                Icons.delete,
+                              ),
                             ],
                           ),
                         ],
@@ -210,7 +234,8 @@ class TodoScreenState extends State<TodoScreen> {
                                 children: [
                                   Text(tasks[index].description),
                                   Text(
-                                      'DUE TO: ${tasks[index].dueDate.toLocal().toString().split(' ')[0]}'),
+                                    'DUE TO: ${tasks[index].dueDate.toLocal().toString().split(' ')[0]}',
+                                  ),
                                 ],
                               ),
                               trailing: Row(
@@ -219,26 +244,30 @@ class TodoScreenState extends State<TodoScreen> {
                                   IconButton(
                                     icon: const Icon(Icons.edit),
                                     onPressed: () {
-                                      _showTaskCreationDialog(context,
-                                          task: tasks[index]);
+                                      _showTaskCreationDialog(
+                                        context,
+                                        task: tasks[index],
+                                      );
                                     },
                                   ),
                                   Checkbox(
                                     value: tasks[index].isCompleted,
                                     onChanged: (bool? value) {
                                       if (value == true) {
-                                        Provider.of<TodoViewModel>(context,
-                                                listen: false)
-                                            .completeTask(tasks[index].id);
+                                        Provider.of<TodoViewModel>(
+                                          context,
+                                          listen: false,
+                                        ).completeTask(tasks[index].id);
                                       }
                                     },
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.delete),
                                     onPressed: () {
-                                      Provider.of<TodoViewModel>(context,
-                                              listen: false)
-                                          .removeTask(tasks[index].id);
+                                      Provider.of<TodoViewModel>(
+                                        context,
+                                        listen: false,
+                                      ).removeTask(tasks[index].id);
                                     },
                                   ),
                                 ],
@@ -261,20 +290,56 @@ class TodoScreenState extends State<TodoScreen> {
     );
   }
 
-  ElevatedButton _buildQuadrantButton(
-      BuildContext context, String title, int index) {
-    return ElevatedButton(
-      onPressed: () => _toggleQuadrant(index),
-      style: ElevatedButton.styleFrom(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.zero,
+  Widget _buildQuadrantButton(BuildContext context, String title, String action,
+      int index, Color color, IconData icon) {
+    bool isSelected = _selectedQuadrant == index;
+    return GestureDetector(
+      onTap: () => _toggleQuadrant(index),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: MediaQuery.of(context).size.width * 0.45,
+        height: MediaQuery.of(context).size.width * 0.45,
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.grey[800] : color,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 4,
+              offset: const Offset(2, 2),
+            ),
+          ],
+          border: Border.all(
+            color: isSelected ? Colors.black : Colors.white,
+            width: 2,
+          ),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        textStyle: const TextStyle(fontSize: 10),
-      ),
-      child: Text(
-        title,
-        textAlign: TextAlign.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Icon(icon, color: Colors.white, size: 40),
+            const SizedBox(height: 8),
+            Text(
+              action,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -57,6 +57,193 @@ class MoneyPlanningScreenState extends State<MoneyPlanningScreen> {
 
                 return Column(
                   children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        'Always use a strategy',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            children: [
+                              const Text(
+                                '50-30-20 rule',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.info_outline),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text('50-30-20 rule'),
+                                        content: const Text.rich(
+                                          TextSpan(
+                                            text: 'The ',
+                                            children: [
+                                              TextSpan(
+                                                text: '50-30-20 rule',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              TextSpan(
+                                                text: ' recommends putting ',
+                                              ),
+                                              TextSpan(
+                                                text: '50%',
+                                                style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              TextSpan(
+                                                text: ' of your money toward ',
+                                              ),
+                                              TextSpan(
+                                                text: 'needs',
+                                                style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              TextSpan(
+                                                text: ', ',
+                                              ),
+                                              TextSpan(
+                                                text: '30%',
+                                                style: TextStyle(
+                                                    color: Colors.blue,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              TextSpan(
+                                                text: ' toward ',
+                                              ),
+                                              TextSpan(
+                                                text: 'wants',
+                                                style: TextStyle(
+                                                    color: Colors.blue,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              TextSpan(
+                                                text: ', and ',
+                                              ),
+                                              TextSpan(
+                                                text: '20%',
+                                                style: TextStyle(
+                                                    color: Colors.green,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              TextSpan(
+                                                text: ' toward ',
+                                              ),
+                                              TextSpan(
+                                                text: 'savings',
+                                                style: TextStyle(
+                                                    color: Colors.green,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              TextSpan(text: '.'),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('OK'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              const Text(
+                                'Pay Yourself First',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.info_outline),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text('Pay Yourself First'),
+                                        content: const Text.rich(
+                                          TextSpan(
+                                            text: 'In the ',
+                                            children: [
+                                              TextSpan(
+                                                text: '“Pay Yourself First”',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              TextSpan(
+                                                text: ' strategy, the ',
+                                              ),
+                                              TextSpan(
+                                                text: 'first “bill”',
+                                                style: TextStyle(
+                                                    color: Color.fromARGB(
+                                                        255, 150, 145, 40),
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    ' you pay every month is to your ',
+                                              ),
+                                              TextSpan(
+                                                text: 'savings',
+                                                style: TextStyle(
+                                                    color: Colors.green,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              TextSpan(text: ' account.'),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('OK'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                     DropdownButton<String>(
                       value: viewModel.selectedCurrency,
                       items: viewModel.currencyOptions.map((String value) {
@@ -78,6 +265,7 @@ class MoneyPlanningScreenState extends State<MoneyPlanningScreen> {
                     Text(
                       'Expenses/Budget: ${(viewModel.getExpenseRatio() * 100).toStringAsFixed(2)}%',
                     ),
+                    const SizedBox(height: 10),
                     Expanded(
                       child: PieChart(
                         PieChartData(
@@ -97,7 +285,10 @@ class MoneyPlanningScreenState extends State<MoneyPlanningScreen> {
                               categorySummary.values.elementAt(index);
                           return ExpansionTile(
                             title: Text(
-                                '$category: ${amount.toStringAsFixed(2)} ${viewModel.selectedCurrency}'),
+                                '$category: ${amount.toStringAsFixed(2)} ${viewModel.selectedCurrency}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                )),
                             children: viewModel
                                 .getExpensesByCategory(category)
                                 .map((expense) {

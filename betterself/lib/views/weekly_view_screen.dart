@@ -171,6 +171,7 @@ class WeeklyViewScreenState extends State<WeeklyViewScreen> {
     final viewModel = Provider.of<ActivityViewModel>(context);
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('Weekly Planner'),
       ),
       body: SingleChildScrollView(
@@ -178,8 +179,11 @@ class WeeklyViewScreenState extends State<WeeklyViewScreen> {
         child: Row(
           children: List.generate(daysOfWeek.length, (index) {
             return SizedBox(
-              width: 240.0,
+              width: 300.0,
               child: Card(
+                color: index >= 5
+                    ? Colors.grey[100]
+                    : Colors.white, // Highlight weekend days
                 child: Column(
                   children: [
                     Padding(
@@ -208,7 +212,7 @@ class WeeklyViewScreenState extends State<WeeklyViewScreen> {
                               ),
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.all(10.0),
                                   child: Text(activity.description),
                                 ),
                                 Row(
