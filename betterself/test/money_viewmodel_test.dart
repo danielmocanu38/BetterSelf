@@ -168,10 +168,8 @@ void main() {
       when(mockDocumentSnapshot.exists).thenReturn(false);
 
       await viewModel.loadExpensesAndBudget('test_user');
-      expect(viewModel.expenses.length,
-          0); // Assuming no expenses returned from mock
-      expect(viewModel.budget.totalAmount,
-          0); // Assuming no budget returned from mock
+      expect(viewModel.expenses.length, 0);
+      expect(viewModel.budget.totalAmount, 0);
     });
   });
 }

@@ -1,4 +1,3 @@
-// lib/models/budget.dart
 import 'income_source.dart';
 
 class Budget {

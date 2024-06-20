@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/services.dart'; // Import FilteringTextInputFormatter
+import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/expense.dart';
 import '../viewmodels/money_viewmodel.dart';
-import 'package:uuid/uuid.dart'; // Import Uuid
+import 'package:uuid/uuid.dart';
 
 class ExpenseCreationScreen extends StatefulWidget {
   final Expense? expense;
-  const ExpenseCreationScreen({super.key, this.expense}); // Add key parameter
+  const ExpenseCreationScreen({super.key, this.expense});
 
   @override
   ExpenseCreationScreenState createState() => ExpenseCreationScreenState();
@@ -20,8 +20,8 @@ class ExpenseCreationScreenState extends State<ExpenseCreationScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final DateTime _date = DateTime.now();
 
-  String _selectedCurrency = '\$'; // Default currency
-  String _selectedCategory = 'Lifestyle'; // Default category
+  String _selectedCurrency = '\$';
+  String _selectedCategory = 'Lifestyle';
 
   final List<String> currencyOptions = ['\$', '€', 'LEI'];
   final List<String> categoryOptions = [

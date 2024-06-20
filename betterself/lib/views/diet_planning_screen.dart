@@ -35,9 +35,9 @@ class DietPlanningScreen extends StatelessWidget {
                 return ListView(
                   children: [
                     Container(
-                      color: Colors.grey[200], // Slightly different background
+                      color: Colors.grey[200],
                       child: ExpansionTile(
-                        initiallyExpanded: true, // Make it implicitly expanded
+                        initiallyExpanded: true,
                         title: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
@@ -85,8 +85,7 @@ class DietPlanningScreen extends StatelessWidget {
                                     children: [
                                       Text(
                                           'Goal: ${diet.dailyCalorieGoal} kcal, Total: ${diet.totalCalories} kcal'),
-                                      Text(
-                                          'Meals: ${diet.meals.length}'), // Display the number of meals
+                                      Text('Meals: ${diet.meals.length}'),
                                     ],
                                   ),
                                   trailing: IconButton(
@@ -108,9 +107,9 @@ class DietPlanningScreen extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      color: Colors.grey[300], // Slightly different background
+                      color: Colors.grey[300],
                       child: ExpansionTile(
-                        initiallyExpanded: true, // Make it implicitly expanded
+                        initiallyExpanded: true,
                         title: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(

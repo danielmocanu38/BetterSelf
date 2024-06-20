@@ -1,4 +1,3 @@
-// test/activity_test.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:betterself/models/activity.dart';
@@ -13,8 +12,8 @@ void main() {
         description: 'Description',
         dateTime: DateTime.now(),
         isRoutine: false,
-        startTime: TimeOfDay(hour: 9, minute: 0),
-        endTime: TimeOfDay(hour: 10, minute: 0),
+        startTime: const TimeOfDay(hour: 9, minute: 0),
+        endTime: const TimeOfDay(hour: 10, minute: 0),
         userId: 'test_user',
       );
 
@@ -37,8 +36,8 @@ void main() {
         description: 'Description',
         dateTime: DateTime.now(),
         isRoutine: false,
-        startTime: TimeOfDay(hour: 9, minute: 0),
-        endTime: TimeOfDay(hour: 10, minute: 0),
+        startTime: const TimeOfDay(hour: 9, minute: 0),
+        endTime: const TimeOfDay(hour: 10, minute: 0),
         userId: 'test_user',
       );
 

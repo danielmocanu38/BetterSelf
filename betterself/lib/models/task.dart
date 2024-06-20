@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Task {
   String id;
-  String userId; // Add this field to link task to a user
+  String userId;
   String title;
   String description;
   DateTime dueDate;
   bool isCompleted;
-  int priority; // Represents the order within the quadrant
-  int quadrant; // Represents the quadrant
+  int priority;
+  int quadrant;
 
   Task({
     required this.id,

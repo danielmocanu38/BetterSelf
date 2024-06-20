@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => DietViewModel()),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'BetterSelf',
         theme: ThemeData(
           primarySwatch: Colors.blue,
@@ -77,7 +78,6 @@ class AuthGate extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.active) {
           final user = snapshot.data;
           if (user == null) {
-            // Clear data on logout
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Provider.of<ActivityViewModel>(context, listen: false)
                   .clearActivities();
@@ -87,7 +87,6 @@ class AuthGate extends StatelessWidget {
             });
             return const LoginScreen();
           } else {
-            // Load user-specific data on login
             return FutureBuilder(
               future: Future.wait([
                 Provider.of<ActivityViewModel>(context, listen: false)

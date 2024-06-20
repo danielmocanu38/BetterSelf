@@ -7,10 +7,10 @@ class Activity {
   String description;
   DateTime dateTime;
   bool isRoutine;
-  String repeatFrequency; // e.g., 'Daily', 'Weekly', 'Monthly', 'Yearly'
+  String repeatFrequency;
   TimeOfDay startTime;
   TimeOfDay endTime;
-  String userId; // Add userId field
+  String userId;
 
   Activity({
     required this.id,
@@ -21,7 +21,7 @@ class Activity {
     this.repeatFrequency = '',
     required this.startTime,
     required this.endTime,
-    required this.userId, // Add userId parameter
+    required this.userId,
   });
 
   factory Activity.fromMap(Map<String, dynamic> data) {
@@ -36,7 +36,7 @@ class Activity {
           hour: data['startTime']['hour'], minute: data['startTime']['minute']),
       endTime: TimeOfDay(
           hour: data['endTime']['hour'], minute: data['endTime']['minute']),
-      userId: data['userId'], // Add userId from map
+      userId: data['userId'],
     );
   }
 
@@ -50,7 +50,7 @@ class Activity {
       'repeatFrequency': repeatFrequency,
       'startTime': {'hour': startTime.hour, 'minute': startTime.minute},
       'endTime': {'hour': endTime.hour, 'minute': endTime.minute},
-      'userId': userId, // Add userId to map
+      'userId': userId,
     };
   }
 }

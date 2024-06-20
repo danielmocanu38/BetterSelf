@@ -21,7 +21,7 @@ class RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _register() async {
     setState(() {
-      _errorMessage = ''; // Reset the error message
+      _errorMessage = '';
       _emailError = false;
       _passwordError = false;
       _confirmPasswordError = false;
@@ -154,8 +154,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                         keyboardType: TextInputType.emailAddress,
                       ),
                     ),
-                    const SizedBox(
-                        height: 20), // Space between email and password fields
+                    const SizedBox(height: 20),
                     Container(
                       margin: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0),

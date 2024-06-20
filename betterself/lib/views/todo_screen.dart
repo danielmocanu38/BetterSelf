@@ -218,7 +218,6 @@ class TodoScreenState extends State<TodoScreen> {
                           }
                           final task = tasks.removeAt(oldIndex);
                           tasks.insert(newIndex, task);
-                          // Update priority based on new order
                           for (int i = 0; i < tasks.length; i++) {
                             tasks[i].priority = i;
                           }

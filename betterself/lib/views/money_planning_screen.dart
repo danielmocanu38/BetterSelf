@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
+import 'package:firebase_auth/firebase_auth.dart';
 import '../viewmodels/money_viewmodel.dart';
 import 'expense_creation_screen.dart';
-import 'budget_management_screen.dart'; // Import BudgetManagementScreen
+import 'budget_management_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class MoneyPlanningScreen extends StatefulWidget {

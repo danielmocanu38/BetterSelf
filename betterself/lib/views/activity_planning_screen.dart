@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../viewmodels/activity_viewmodel.dart'; // Adjust this import based on your actual view model location
+import '../viewmodels/activity_viewmodel.dart';
 import 'weekly_view_screen.dart';
 import 'calendar_view_screen.dart';
 

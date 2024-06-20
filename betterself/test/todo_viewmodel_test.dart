@@ -5,7 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:betterself/viewmodels/todo_viewmodel.dart';
 import 'package:betterself/models/task.dart';
-import 'mock.dart'; // Import the mock file
+import 'mock.dart';
 import 'todo_viewmodel_test.mocks.dart';
 
 @GenerateMocks([
@@ -17,7 +17,7 @@ import 'todo_viewmodel_test.mocks.dart';
   QueryDocumentSnapshot
 ])
 void main() {
-  setupFirebaseMocks(); // Set up the Firebase mocks
+  setupFirebaseMocks();
 
   group('TodoViewModel Tests', () {
     late TodoViewModel viewModel;
@@ -30,7 +30,6 @@ void main() {
         mockQueryDocumentSnapshot;
 
     setUpAll(() async {
-      // Initialize Firebase for testing
       await Firebase.initializeApp();
     });
 
@@ -53,7 +52,7 @@ void main() {
         'id': '1',
         'title': 'Test Task',
         'description': 'Description',
-        'dueDate': Timestamp.fromDate(DateTime.now()), // Use Timestamp here
+        'dueDate': Timestamp.fromDate(DateTime.now()),
         'isCompleted': false,
         'quadrant': 1,
         'priority': 1,
@@ -61,7 +60,7 @@ void main() {
       });
 
       viewModel = TodoViewModel();
-      viewModel.setFirestore(mockFirestore); // Set the mock Firestore instance
+      viewModel.setFirestore(mockFirestore);
     });
 
     test('Add and remove task', () async {

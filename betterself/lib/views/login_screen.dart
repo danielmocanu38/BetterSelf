@@ -20,7 +20,7 @@ class LoginScreenState extends State<LoginScreen> {
 
   void _login() async {
     setState(() {
-      _errorMessage = ''; // Reset the error message
+      _errorMessage = '';
       _emailError = false;
       _passwordError = false;
     });
@@ -46,7 +46,7 @@ class LoginScreenState extends State<LoginScreen> {
         email: _emailController.text,
         password: _passwordController.text,
       );
-      if (!mounted) return; // Ensure widget is still mounted
+      if (!mounted) return;
       if (userCredential.user != null) {
         Provider.of<ActivityViewModel>(context, listen: false)
             .loadActivities(userCredential.user!.uid);
@@ -84,7 +84,7 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Ensure white background
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -92,7 +92,7 @@ class LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              'BetterSelf', // App title at the top
+              'BetterSelf',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 32,

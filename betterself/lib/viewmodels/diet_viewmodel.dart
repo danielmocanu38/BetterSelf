@@ -15,9 +15,7 @@ class DietViewModel extends ChangeNotifier {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  DietViewModel() {
-    // Initialize with empty lists
-  }
+  DietViewModel();
 
   void setFirestore(FirebaseFirestore firestore) {
     _firestore = firestore;

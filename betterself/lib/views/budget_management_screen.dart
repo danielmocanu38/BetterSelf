@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart'; // Import FilteringTextInputFormatter
+import 'package:flutter/services.dart';
 import '../viewmodels/money_viewmodel.dart';
 import '../models/income_source.dart';
-import 'package:uuid/uuid.dart'; // Import Uuid
+import 'package:uuid/uuid.dart';
 
 class BudgetManagementScreen extends StatelessWidget {
-  BudgetManagementScreen({super.key}); // Add key parameter
+  BudgetManagementScreen({super.key});
 
   final TextEditingController _incomeAmountController = TextEditingController();
   final TextEditingController _incomeSourceController = TextEditingController();
