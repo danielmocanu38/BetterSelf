@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../models/task.dart';
 
 class TodoViewModel extends ChangeNotifier {
@@ -12,57 +11,41 @@ class TodoViewModel extends ChangeNotifier {
       _tasks.where((task) => task.isCompleted).toList();
   bool get isLoading => _isLoading;
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  TodoViewModel() {
-    _loadInitialData();
+  void setFirestore(FirebaseFirestore firestore) {
+    _firestore = firestore;
   }
 
-  Future<void> _loadInitialData() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      await loadTasks(user.uid);
-    }
-  }
-
-  Future<void> addTask(Task task) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      task.userId = user.uid;
-      task.priority = _tasks.where((t) => t.quadrant == task.quadrant).length;
-      _tasks.add(task);
-      await _firestore.collection('tasks').doc(task.id).set(task.toMap());
-      notifyListeners();
-    }
+  Future<void> addTask(Task task, String userId) async {
+    task.userId = userId;
+    task.priority = _tasks.where((t) => t.quadrant == task.quadrant).length;
+    _tasks.add(task);
+    await _firestore.collection('tasks').doc(task.id).set(task.toMap());
+    notifyListeners();
   }
 
   Future<void> removeTask(String id) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final taskToRemove = _tasks.firstWhere((task) => task.id == id);
-      _tasks.removeWhere((task) => task.id == id);
-      _tasks
-          .where((task) => task.quadrant == taskToRemove.quadrant)
-          .toList()
-          .asMap()
-          .forEach((index, task) {
-        task.priority = index;
-        _firestore.collection('tasks').doc(task.id).set(task.toMap());
-      });
-      await _firestore.collection('tasks').doc(id).delete();
-      notifyListeners();
-    }
+    final taskToRemove = _tasks.firstWhere((task) => task.id == id);
+    _tasks.removeWhere((task) => task.id == id);
+    _tasks
+        .where((task) => task.quadrant == taskToRemove.quadrant)
+        .toList()
+        .asMap()
+        .forEach((index, task) {
+      task.priority = index;
+      _firestore.collection('tasks').doc(task.id).set(task.toMap());
+    });
+    await _firestore.collection('tasks').doc(id).delete();
+    notifyListeners();
   }
 
   Future<void> updateTask(Task task) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final index = _tasks.indexWhere((t) => t.id == task.id);
-      if (index != -1) {
-        _tasks[index] = task;
-        await _firestore.collection('tasks').doc(task.id).set(task.toMap());
-        notifyListeners();
-      }
+    final index = _tasks.indexWhere((t) => t.id == task.id);
+    if (index != -1) {
+      _tasks[index] = task;
+      await _firestore.collection('tasks').doc(task.id).set(task.toMap());
+      notifyListeners();
     }
   }
 
@@ -92,13 +75,10 @@ class TodoViewModel extends ChangeNotifier {
   }
 
   Future<void> updateTaskPriorities(List<Task> tasks) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      for (var task in tasks) {
-        await _firestore.collection('tasks').doc(task.id).set(task.toMap());
-      }
-      notifyListeners();
+    for (var task in tasks) {
+      await _firestore.collection('tasks').doc(task.id).set(task.toMap());
     }
+    notifyListeners();
   }
 
   Future<void> completeTask(String id) async {
@@ -130,12 +110,8 @@ class TodoViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void refreshTasks() {
-    // You can refetch tasks from the data source or reset the state as needed
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      loadTasks(user.uid);
-    }
+  void refreshTasks(String userId) {
+    loadTasks(userId);
   }
 
   void clearData() {

@@ -1,4 +1,5 @@
-// lib/models/task.dart
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Task {
   String id;
   String userId; // Add this field to link task to a user
@@ -39,7 +40,9 @@ class Task {
       userId: map['userId'],
       title: map['title'],
       description: map['description'],
-      dueDate: DateTime.parse(map['dueDate']),
+      dueDate: map['dueDate'] is Timestamp
+          ? (map['dueDate'] as Timestamp).toDate()
+          : DateTime.parse(map['dueDate']),
       isCompleted: map['isCompleted'],
       priority: map['priority'],
       quadrant: map['quadrant'],

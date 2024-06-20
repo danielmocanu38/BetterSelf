@@ -16,14 +16,25 @@ class MoneyViewModel extends ChangeNotifier {
 
   final List<String> currencyOptions = ['\$', '€', 'LEI'];
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   MoneyViewModel() {
     _budget = Budget(totalAmount: 0, spentAmount: 0, incomeSources: []);
   }
 
-  void addExpense(Expense expense) async {
-    final user = FirebaseAuth.instance.currentUser;
+  void setFirestore(FirebaseFirestore firestore) {
+    _firestore = firestore;
+  }
+
+  void setFirebaseAuth(FirebaseAuth firebaseAuth) {
+    _firebaseAuth = firebaseAuth;
+  }
+
+  User? get currentUser => _firebaseAuth.currentUser;
+
+  Future<void> addExpense(Expense expense) async {
+    final user = currentUser;
     if (user != null) {
       expense.userId = user.uid;
       _expenses.add(expense);
@@ -37,8 +48,8 @@ class MoneyViewModel extends ChangeNotifier {
     }
   }
 
-  void removeExpense(String id) async {
-    final user = FirebaseAuth.instance.currentUser;
+  Future<void> removeExpense(String id) async {
+    final user = currentUser;
     if (user != null) {
       final expense = _expenses.firstWhere((e) => e.id == id);
       _expenses.removeWhere((expense) => expense.id == id);
@@ -49,8 +60,8 @@ class MoneyViewModel extends ChangeNotifier {
     }
   }
 
-  void updateExpense(Expense expense) async {
-    final user = FirebaseAuth.instance.currentUser;
+  Future<void> updateExpense(Expense expense) async {
+    final user = currentUser;
     if (user != null) {
       final index = _expenses.indexWhere((e) => e.id == expense.id);
       if (index != -1) {
@@ -69,8 +80,8 @@ class MoneyViewModel extends ChangeNotifier {
     }
   }
 
-  void updateIncomeSource(IncomeSource source) async {
-    final user = FirebaseAuth.instance.currentUser;
+  Future<void> updateIncomeSource(IncomeSource source) async {
+    final user = currentUser;
     if (user != null) {
       final index = _budget.incomeSources.indexWhere((s) => s.id == source.id);
       if (index != -1) {
@@ -89,8 +100,8 @@ class MoneyViewModel extends ChangeNotifier {
     }
   }
 
-  void setBudget(double amount) async {
-    final user = FirebaseAuth.instance.currentUser;
+  Future<void> setBudget(double amount) async {
+    final user = currentUser;
     if (user != null) {
       _budget.totalAmount = amount;
       notifyListeners();
@@ -98,8 +109,8 @@ class MoneyViewModel extends ChangeNotifier {
     }
   }
 
-  void addIncomeSource(IncomeSource source) async {
-    final user = FirebaseAuth.instance.currentUser;
+  Future<void> addIncomeSource(IncomeSource source) async {
+    final user = currentUser;
     if (user != null) {
       source.userId = user.uid;
       _budget.incomeSources.add(source);
@@ -110,8 +121,8 @@ class MoneyViewModel extends ChangeNotifier {
     }
   }
 
-  void removeIncomeSource(String id) async {
-    final user = FirebaseAuth.instance.currentUser;
+  Future<void> removeIncomeSource(String id) async {
+    final user = currentUser;
     if (user != null) {
       final source = _budget.incomeSources.firstWhere((s) => s.id == id);
       _budget.incomeSources.removeWhere((source) => source.id == id);

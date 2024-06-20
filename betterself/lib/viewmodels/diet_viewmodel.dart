@@ -12,13 +12,22 @@ class DietViewModel extends ChangeNotifier {
   List<Dish> get dishes => _dishes;
   List<Diet> get diets => _diets;
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   DietViewModel() {
     // Initialize with empty lists
   }
 
-  User? get currentUser => FirebaseAuth.instance.currentUser;
+  void setFirestore(FirebaseFirestore firestore) {
+    _firestore = firestore;
+  }
+
+  void setFirebaseAuth(FirebaseAuth firebaseAuth) {
+    _firebaseAuth = firebaseAuth;
+  }
+
+  User? get currentUser => _firebaseAuth.currentUser;
 
   Future<void> addDish(Dish dish) async {
     final user = currentUser;

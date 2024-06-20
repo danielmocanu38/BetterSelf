@@ -108,7 +108,7 @@ class TodoScreenState extends State<TodoScreen> {
                     );
                     if (task == null) {
                       Provider.of<TodoViewModel>(context, listen: false)
-                          .addTask(newTask);
+                          .addTask(newTask, user.uid);
                     } else {
                       Provider.of<TodoViewModel>(context, listen: false)
                           .updateTask(newTask);

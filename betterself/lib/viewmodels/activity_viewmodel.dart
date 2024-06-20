@@ -9,9 +9,13 @@ class ActivityViewModel extends ChangeNotifier {
   List<Activity> get weeklyActivities => _weeklyActivities;
   List<Activity> get calendarActivities => _calendarActivities;
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  void addWeeklyActivity(Activity activity) async {
+  void setFirestore(FirebaseFirestore firestore) {
+    _firestore = firestore;
+  }
+
+  Future<void> addWeeklyActivity(Activity activity) async {
     _weeklyActivities.add(activity);
     _weeklyActivities.sort((a, b) {
       final aTime = a.startTime.hour * 60 + a.startTime.minute;
@@ -25,7 +29,7 @@ class ActivityViewModel extends ChangeNotifier {
         .set(activity.toMap());
   }
 
-  void addCalendarActivity(Activity activity) async {
+  Future<void> addCalendarActivity(Activity activity) async {
     _calendarActivities.add(activity);
     notifyListeners();
     await _firestore
@@ -34,19 +38,19 @@ class ActivityViewModel extends ChangeNotifier {
         .set(activity.toMap());
   }
 
-  void removeWeeklyActivity(String id) async {
+  Future<void> removeWeeklyActivity(String id) async {
     _weeklyActivities.removeWhere((activity) => activity.id == id);
     notifyListeners();
     await _firestore.collection('weeklyActivities').doc(id).delete();
   }
 
-  void removeCalendarActivity(String id) async {
+  Future<void> removeCalendarActivity(String id) async {
     _calendarActivities.removeWhere((activity) => activity.id == id);
     notifyListeners();
     await _firestore.collection('calendarActivities').doc(id).delete();
   }
 
-  void updateWeeklyActivity(Activity activity) async {
+  Future<void> updateWeeklyActivity(Activity activity) async {
     final index = _weeklyActivities.indexWhere((a) => a.id == activity.id);
     if (index != -1) {
       _weeklyActivities[index] = activity;
@@ -63,7 +67,7 @@ class ActivityViewModel extends ChangeNotifier {
     }
   }
 
-  void updateCalendarActivity(Activity activity) async {
+  Future<void> updateCalendarActivity(Activity activity) async {
     final index = _calendarActivities.indexWhere((a) => a.id == activity.id);
     if (index != -1) {
       _calendarActivities[index] = activity;
