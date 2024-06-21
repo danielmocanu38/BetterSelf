@@ -59,14 +59,6 @@ class MoneyPlanningScreenState extends State<MoneyPlanningScreen> {
                   children: [
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(
-                        'Always use a strategy',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),

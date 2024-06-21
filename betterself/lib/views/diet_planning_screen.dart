@@ -35,7 +35,7 @@ class DietPlanningScreen extends StatelessWidget {
                 return ListView(
                   children: [
                     Container(
-                      color: Colors.grey[200],
+                      color: const Color.fromARGB(255, 238, 238, 238),
                       child: ExpansionTile(
                         initiallyExpanded: true,
                         title: Padding(

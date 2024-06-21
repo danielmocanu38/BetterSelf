@@ -51,8 +51,8 @@ class ActivityPlanningScreenState extends State<ActivityPlanningScreen> {
           title: const Text('Activity Planning'),
           bottom: TabBar(
             tabs: const [
-              Tab(text: 'Weekly View'),
-              Tab(text: 'Calendar View'),
+              Tab(text: 'Weekly Planner'),
+              Tab(text: 'Calendar'),
             ],
             onTap: _onViewChanged,
           ),
